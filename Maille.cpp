@@ -1,25 +1,47 @@
 #include "Maille.h"
 
-Maille::Maille(double cr) : _sc(1.), _cr(cr), _broken(false)
+Maille::Maille(double sr) : _cc(1.), _sr(sr), _broken(false)
 {
 }
 
-std::vector<int> Maille::voisins()
+void Maille::rompre()
 {
-    // FONCTION A CODER
-    std::vector<int> V;
-    return V;
-}
-
-std::vector<int> Maille::rompre()
-{
-    // FONCTION A CODER
+    // une loi de répartition très simple
     this->_broken = true;
-    std::vector<int> V;
-    return V;
+    std::vector<Maille *> V = this->get_voisins();
+    std::vector<Maille *> not_broken_V;
+
+    for (long unsigned int i = 0; i < V.size(); i++)
+        if (!V[i]->isBroken())
+            not_broken_V.push_back(V[i]);
+
+    int n = not_broken_V.size();
+    double dcc = this->get_cc() / n;
+    this->set_cc(0.);
+
+    for (int i = 0; i < n; i++)
+        not_broken_V[i]->add_cc(dcc);
 }
 
-double Maille::compute_dc(double contrainte) const
+double Maille::compute_breaking_stress() const
 {
-    return this->_cr - (this->_sc - 1.) * contrainte;
+    if (this->isBroken())
+        return 0.;
+    else
+        return this->get_sr() / this->get_cc();
+}
+
+void Maille::add_cc(double dcc)
+{
+    this->set_cc(this->get_cc() + dcc);
+}
+
+void Maille::add_voisins(Maille *V)
+{
+    this->_voisins.push_back(V);
+}
+
+double Maille::compute_stress(double contrainte_red) const
+{
+    return this->get_cc() * contrainte_red;
 }

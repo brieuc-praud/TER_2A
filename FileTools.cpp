@@ -2,7 +2,7 @@
 #include <fstream>
 #include "FileTools.h"
 
-void SaveSolution(std::string file_name, int Nx, int Ny, std::vector<Maille *> const &M)
+void SaveSolution(std::string file_name, int Nx, int Ny, std::vector<Maille *> const &M, double contrainte)
 {
     std::ofstream solution;
     solution.open(file_name, std::ios::out);
@@ -16,7 +16,7 @@ void SaveSolution(std::string file_name, int Nx, int Ny, std::vector<Maille *> c
     solution << "SPACING " << 1. << " " << 1. << " " << 1. << std::endl;
 
     solution << "POINT_DATA " << Nx * Ny << std::endl;
-    solution << "SCALARS ruptures float" << std::endl;
+    solution << "SCALARS rupture float" << std::endl;
     solution << "LOOKUP_TABLE default" << std::endl;
     for (int j = 0; j < Ny; j++)
     {
@@ -26,5 +26,39 @@ void SaveSolution(std::string file_name, int Nx, int Ny, std::vector<Maille *> c
         }
         solution << std::endl;
     }
+
+    solution << "SCALARS cc float" << std::endl;
+    solution << "LOOKUP_TABLE default" << std::endl;
+    for (int j = 0; j < Ny; j++)
+    {
+        for (int i = 0; i < Nx; i++)
+        {
+            solution << M[i + j * Ny]->get_cc() << " ";
+        }
+        solution << std::endl;
+    }
+
+    solution << "SCALARS contrainte_de_rupture float" << std::endl;
+    solution << "LOOKUP_TABLE default" << std::endl;
+    for (int j = 0; j < Ny; j++)
+    {
+        for (int i = 0; i < Nx; i++)
+        {
+            solution << M[i + j * Ny]->compute_breaking_stress() << " ";
+        }
+        solution << std::endl;
+    }
+
+    solution << "SCALARS contrainte float" << std::endl;
+    solution << "LOOKUP_TABLE default" << std::endl;
+    for (int j = 0; j < Ny; j++)
+    {
+        for (int i = 0; i < Nx; i++)
+        {
+            solution << M[i + j * Ny]->compute_stress(contrainte) << " ";
+        }
+        solution << std::endl;
+    }
+
     solution.close();
 }
