@@ -11,11 +11,12 @@ int main(int argc, char **argv)
 {
   // pour diminuer le nombre de fichiers en sortie
   int nf = 0;
-  int mod_nf = 1; // on sort Nx*Ny/mod_nf fichiers
+  int mod_nf = 10; // on sort Nx*Ny/mod_nf fichiers
 
   // === Paramètres que l'on lira dans un fichier ===
-  int const Nx = 20;                                        // dimension X
-  int const Ny = 20;                                        // dimension Y
+  int const Nx = 10;                                        // dimension X
+  int const Ny = 10;                                        // dimension Y
+  int const Nz = 10;                                        // dimension Z
   std::string const file_name_prefix = "results/traction_"; // chemin des fichiers de sortie
   // --- paramètres de la loi de Weibull ---
   double const V = 5.;
@@ -23,7 +24,7 @@ int main(int argc, char **argv)
   int const m = 1;
   // ======
 
-  int const N = Nx * Ny; // nombre total de mailles
+  int const N = Nx * Ny * Nz; // nombre total de mailles
 
   // Initialisation
   std::default_random_engine generator(time(0));
@@ -43,22 +44,26 @@ int main(int argc, char **argv)
   }
 
   // creer les relations de voisinage
-  for (int i = 1; i < Nx; i++)
+  for (int i = 0; i < Nx; i++)
   {
-    M[i]->add_voisins(M[i - 1]); // voisins à gauche
-    M[i - 1]->add_voisins(M[i]); // voisins à droite
-    for (int j = 1; j < Ny; j++)
+    for (int j = 0; j < Ny; j++)
     {
-      M[i + j * Nx]->add_voisins(M[(i - 1) + j * Nx]); // voisins à gauche
-      M[(i - 1) + j * Nx]->add_voisins(M[i + j * Nx]); // voisins à droite
-      M[i + j * Nx]->add_voisins(M[i + (j - 1) * Nx]); // voisins au-dessus
-      M[i + (j - 1) * Nx]->add_voisins(M[i + j * Nx]); // voisins en-dessous
+      for (int k = 0; k < Nz; k++)
+      {
+        if (i > 0)
+          M[i + (j + k * Ny) * Nx]->add_voisins(M[i - 1 + (j + k * Ny) * Nx]); // à gauche
+        if (i < Nx - 1)
+          M[i + (j + k * Ny) * Nx]->add_voisins(M[i + 1 + (j + k * Ny) * Nx]); // à droite
+        if (j > 0)
+          M[i + (j + k * Ny) * Nx]->add_voisins(M[i + (j - 1 + k * Ny) * Nx]); // derrière
+        if (j < Ny - 1)
+          M[i + (j + k * Ny) * Nx]->add_voisins(M[i + (j + 1 + k * Ny) * Nx]); // devant
+        if (k > 0)
+          M[i + (j + k * Ny) * Nx]->add_voisins(M[i + (j + (k - 1) * Ny) * Nx]); // en-dessous
+        if (k < Nz - 1)
+          M[i + (j + k * Ny) * Nx]->add_voisins(M[i + (j + (k + 1) * Ny) * Nx]); // au-dessus
+      }
     }
-  }
-  for (int j = 1; j < Ny; j++)
-  {
-    M[j * Nx]->add_voisins(M[(j - 1) * Nx]); // voisins au-dessus
-    M[(j - 1) * Nx]->add_voisins(M[j * Nx]); // voisins en-dessous
   }
 
   // boucle principale
@@ -67,10 +72,9 @@ int main(int argc, char **argv)
   {
     if (nf % mod_nf == 0)
     {
-      std::string nf_str = std::to_string(nf + 1);
-      // std::cout << nf_str << " / " << N << std::endl;
+      std::string nf_str = std::to_string(nf);
       std::string file_name = file_name_prefix + nf_str + ".vtk";
-      SaveSolution(file_name, Nx, Ny, M, contrainte_red * N);
+      SaveSolution(file_name, Nx, Ny, Nz, M, contrainte_red * N);
     }
     nf++;
 
@@ -110,7 +114,7 @@ int main(int argc, char **argv)
   {
     std::string nf_str = std::to_string(N);
     std::string file_name = file_name_prefix + nf_str + ".vtk";
-    SaveSolution(file_name, Nx, Ny, M, contrainte_red * N);
+    SaveSolution(file_name, Nx, Ny, Nz, M, contrainte_red * N);
   }
 
   // Désalloue la mémoire
