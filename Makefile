@@ -32,5 +32,5 @@ clean_results :
 
 # Clean both compilation and results files
 clean_all :
-	clean
-	clean_results
+	make clean
+	make clean_results
