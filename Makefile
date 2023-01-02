@@ -6,7 +6,7 @@ OPTIM_FLAG = -O3 -DNDEBUG -I ~/TPC++/EigenLibrary/Eigen -std=c++11 -Wall
 # Debug options
 DEBUG_FLAG = -g -I ~/TPC++/EigenLibrary/Eigen -std=c++11 -Wall
 # Choose how to compile here
-CXX_FLAGS = $(DEBUG_FLAG)
+CXX_FLAGS = $(OPTIM_FLAG)
 
 # The name of the executable file
 PROG = ttucm # Tensile test of a unidirectional composite material

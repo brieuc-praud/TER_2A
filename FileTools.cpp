@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include "FileTools.h"
+#include "toml.hpp"
 
 void SaveSolution(std::string file_name, int Nx, int Ny, int Nz, std::vector<Cell *> const &M, double global_stress)
 {
@@ -81,4 +82,22 @@ void SaveSolution(std::string file_name, int Nx, int Ny, int Nz, std::vector<Cel
     }
 
     solution.close();
+}
+
+void ReadParameters(int &Nx, int &Ny, int &Nz, double &V, double &s0, int &m, std::string &file_name_prefix)
+{
+    auto config = toml::parse("parameters.toml");
+
+    const auto &Dimensions = toml::find(config, "Dimensions");
+    Nx = toml::find<int>(Dimensions, "Nx");
+    Ny = toml::find<int>(Dimensions, "Ny");
+    Nz = toml::find<int>(Dimensions, "Nz");
+
+    const auto &Weibull = toml::find(config, "Weibull");
+    V = toml::find<double>(Weibull, "V");
+    s0 = toml::find<double>(Weibull, "s0");
+    m = toml::find<int>(Weibull, "m");
+
+    const auto &Other = toml::find(config, "Other");
+    file_name_prefix = toml::find<std::string>(Other, "file_name_prefix");
 }

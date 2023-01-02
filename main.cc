@@ -14,15 +14,15 @@ int main(int argc, char **argv)
   int mod_nf = 10; // Number of output files : Nx*Ny*Nz/mod_nf
 
   /* Parameters to read in a file */
-  int const Nx = 10;                                  // X dimension
-  int const Ny = 10;                                  // Y dimension
-  int const Nz = 10;                                  // Z dimension
-  std::string const file_name_prefix = "results/tt_"; // path and filename prefix for the results files
-
+  int Nx;                       // X dimension
+  int Ny;                       // Y dimension
+  int Nz;                       // Z dimension
+  std::string file_name_prefix; // path and filename prefix for the results files
   /* Weibull's law parameters */
-  double const V = 5.;
-  double const s0 = 2.;
-  int const m = 1;
+  double V;
+  double s0;
+  int m;
+  ReadParameters(Nx, Ny, Nz, V, s0, m, file_name_prefix);
 
   int const N = Nx * Ny * Nz; // total number of cells
 

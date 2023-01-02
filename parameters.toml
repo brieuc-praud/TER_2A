@@ -1,0 +1,12 @@
+[Dimensions]
+Nx = 10
+Ny = 10
+Nz = 10
+
+[Weibull]
+V = 5.0
+s0 = 2.0
+m = 1
+
+[Other]
+file_name_prefix = "results/tt_"    # path and filename prefix for the results files
