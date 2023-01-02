@@ -8,7 +8,9 @@ private:
     double _sc;              // stress coefficient
     double const _bs;        // breaking stress
     bool _broken;            // status of the Cell
-    std::vector<Cell *> _NB; // neighbors (adjacent cells)
+    std::vector<Cell *> _NB; // side neighbors (adjacent cells)
+    Cell *_unb;              // up neighbor
+    Cell *_dnb;              // down neighbor
 
 public:
     Cell(double cr);
@@ -25,5 +27,9 @@ public:
     void set_sc(double sc) { this->_sc = sc; };
     double get_bs() const { return this->_bs; };
     std::vector<Cell *> get_NB() const { return this->_NB; };
+    void set_unb(Cell *unb) { this->_unb = unb; };
+    void set_dnb(Cell *dnb) { this->_dnb = dnb; };
+    Cell *get_unb() { return this->_unb; };
+    Cell *get_dnb() { return this->_dnb; };
     bool isBroken() const { return this->_broken; };
 };

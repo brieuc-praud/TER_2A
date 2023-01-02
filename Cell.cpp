@@ -1,15 +1,18 @@
 #include "Cell.h"
 
-Cell::Cell(double bs) : _sc(1.), _bs(bs), _broken(false)
+Cell::Cell(double bs) : _sc(1.), _bs(bs), _broken(false), _NB(0), _unb(nullptr), _dnb(nullptr)
 {
 }
 
 void Cell::shatter()
 {
-    // simple distribution law
+    if (this->isBroken())
+        return;
+
+    /* simple distribution law */
     this->_broken = true;
-    std::vector<Cell *> NB = this->get_NB();
-    std::vector<Cell *> UBNB; // unbroken neighbors
+    std::vector<Cell *> NB = this->get_NB(); // side neighbors
+    std::vector<Cell *> UBNB;                // unbroken side neighbors
 
     for (long unsigned int i = 0; i < NB.size(); i++)
         if (!NB[i]->isBroken())
@@ -21,6 +24,14 @@ void Cell::shatter()
 
     for (int i = 0; i < n; i++)
         UBNB[i]->add_sc(dsc);
+
+    /* break the other Cells of the fiber */
+    Cell *const unb = this->get_unb();
+    Cell *const dnb = this->get_dnb();
+    if (unb != nullptr)
+        unb->shatter();
+    if (dnb != nullptr)
+        dnb->shatter();
 }
 
 double Cell::compute_breaking_stress() const

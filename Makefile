@@ -24,7 +24,7 @@ run : $(PROG)
 
 # Delete compilation files
 clean :
-	rm *.o *∼ $(PROG) ./results/*
+	rm *.o *∼ $(PROG)
 
 # Delete results files
 clean_results :

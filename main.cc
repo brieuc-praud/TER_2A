@@ -59,9 +59,9 @@ int main(int argc, char **argv)
         if (j < Ny - 1)
           CELL[i + (j + k * Ny) * Nx]->add_NB(CELL[i + (j + 1 + k * Ny) * Nx]); // back
         if (k > 0)
-          CELL[i + (j + k * Ny) * Nx]->add_NB(CELL[i + (j + (k - 1) * Ny) * Nx]); // below
+          CELL[i + (j + k * Ny) * Nx]->set_dnb(CELL[i + (j + (k - 1) * Ny) * Nx]); // below
         if (k < Nz - 1)
-          CELL[i + (j + k * Ny) * Nx]->add_NB(CELL[i + (j + (k + 1) * Ny) * Nx]); // above
+          CELL[i + (j + k * Ny) * Nx]->set_unb(CELL[i + (j + (k + 1) * Ny) * Nx]); // above
       }
     }
   }
