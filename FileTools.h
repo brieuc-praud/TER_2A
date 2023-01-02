@@ -1,6 +1,6 @@
 #pragma once
 
 #include <string>
-#include "Maille.h"
+#include "Cell.h"
 
-void SaveSolution(std::string file_name, int Nx, int Ny, int Nz, std::vector<Maille *> const &M, double contrainte);
+void SaveSolution(std::string file_name, int Nx, int Ny, int Nz, std::vector<Cell *> const &M, double global_stress);

@@ -1,29 +1,36 @@
-# Compilateur utilisé
+# compiler
 CC=g++
 
-# Options en mode optimisé - La variable NDEBUG est définie
+# Optimization options
 OPTIM_FLAG = -O3 -DNDEBUG -I ~/TPC++/EigenLibrary/Eigen -std=c++11 -Wall
-# Options en mode debug - La variable NDEBUG n’est pas définie
+# Debug options
 DEBUG_FLAG = -g -I ~/TPC++/EigenLibrary/Eigen -std=c++11 -Wall
-# On choisit comment on compile
+# Choose how to compile here
 CXX_FLAGS = $(DEBUG_FLAG)
 
-# Le nom de l’exécutable
-PROG = rmcu # Rupture d'un matériau composite unidirectionnel
+# The name of the executable file
+PROG = ttucm # Tensile test of a unidirectional composite material
 
-# Les fichiers source à compiler
-SRC = main.cc Maille.cpp FileTools.cpp
+# Sources to compile
+SRC = main.cc Cell.cpp FileTools.cpp
 
-# La commande complète : compile seulement si un fichier a été modifié
+# The compilation line
 $(PROG) : $(SRC)
 	$(CC) $(SRC) $(CXX_FLAGS) -o $(PROG)
 
-# Évite de devoir connaitre le nom de l’exécutable
-all : $(PROG)
-
-exe : $(PROG)
+# Compile and run
+run : $(PROG)
 	./$(PROG)
 
-# Supprime l’exécutable, les fichiers binaires (.o) et ceux temporaires (∼)
+# Delete compilation files
 clean :
 	rm *.o *∼ $(PROG) ./results/*
+
+# Delete results files
+clean_results :
+	rm ./results/*
+
+# Clean both compilation and results files
+clean_all :
+	clean
+	clean_results
