@@ -1,7 +1,7 @@
 [Dimensions]
-Nx = 10
-Ny = 10
-Nz = 10
+Nx = 16
+Ny = 16
+Nz = 16
 
 [Weibull]
 V = 5.0
@@ -10,3 +10,4 @@ m = 1
 
 [Other]
 file_name_prefix = "results/tt_"    # path and filename prefix for the results files
+mod_nf = 1 # output : one file out of mod_nf

@@ -9,9 +9,6 @@
 
 int main(int argc, char **argv)
 {
-  /* For reducing the number of output files */
-  int nf = 0;
-  int mod_nf = 10; // Number of output files : Nx*Ny*Nz/mod_nf
 
   /* Parameters to read in a file */
   int Nx;                       // X dimension
@@ -22,7 +19,10 @@ int main(int argc, char **argv)
   double V;
   double s0;
   int m;
-  ReadParameters(Nx, Ny, Nz, V, s0, m, file_name_prefix);
+  /* For reducing the number of output files */
+  int nf = 0;
+  int mod_nf; // Number of output files : Nx*Ny*Nz/mod_nf
+  ReadParameters(Nx, Ny, Nz, V, s0, m, file_name_prefix, mod_nf);
 
   int const N = Nx * Ny * Nz; // total number of cells
 

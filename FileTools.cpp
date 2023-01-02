@@ -84,7 +84,7 @@ void SaveSolution(std::string file_name, int Nx, int Ny, int Nz, std::vector<Cel
     solution.close();
 }
 
-void ReadParameters(int &Nx, int &Ny, int &Nz, double &V, double &s0, int &m, std::string &file_name_prefix)
+void ReadParameters(int &Nx, int &Ny, int &Nz, double &V, double &s0, int &m, std::string &file_name_prefix, int &mod_nf)
 {
     auto config = toml::parse("parameters.toml");
 
@@ -100,4 +100,5 @@ void ReadParameters(int &Nx, int &Ny, int &Nz, double &V, double &s0, int &m, st
 
     const auto &Other = toml::find(config, "Other");
     file_name_prefix = toml::find<std::string>(Other, "file_name_prefix");
+    mod_nf = toml::find<int>(Other, "mod_nf");
 }
