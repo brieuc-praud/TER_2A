@@ -14,6 +14,7 @@ int main(int argc, char **argv)
   int Nx;                       // X dimension
   int Ny;                       // Y dimension
   int Nz;                       // Z dimension
+  int L;                        // reload length, only a number of maillon for the moment
   std::string file_name_prefix; // path and filename prefix for the results files
   /* Weibull's law parameters */
   double V;
@@ -22,7 +23,7 @@ int main(int argc, char **argv)
   /* For reducing the number of output files */
   int nf = 0;
   int mod_nf; // Number of output files : Nx*Ny*Nz/mod_nf
-  ReadParameters(Nx, Ny, Nz, V, s0, m, file_name_prefix, mod_nf);
+  ReadParameters(Nx, Ny, Nz, L,V, s0, m, file_name_prefix, mod_nf);
 
   int const N = Nx * Ny * Nz; // total number of cells
 
@@ -31,6 +32,9 @@ int main(int argc, char **argv)
   std::uniform_real_distribution<double> distribution(0.0, 1.0);
   std::vector<Cell *> CELL;   // CELL is storing all the Cells
   std::vector<Cell *> UBCELL; // UBCELL stores only unbroken cells (as a result, the number of Cells to check decline at each iteration)
+  std::vector<Cell *>UPCELL;
+  std::vector<Cell *>DOWNCELL;
+
   CELL.resize(N);
   double const coeff = s0 / pow(V, 1. / m);
   for (int i = 0; i < N; i++)
@@ -94,8 +98,19 @@ int main(int argc, char **argv)
           UBCELL[i]->shatter();
           to_delete.push_back(i);
           breaking_flag = true;
+          for (int l = 0; l < Nx; l++)
+            for (int j = 0; j < Ny; j++)
+            {
+              for (int k = 0; k < 3; k++)
+              {
+                if (k > 0)
+                  UBCELL[l + (j + k * Ny) * Nx]->add_sc(red_stress/12) ;// below
+                if (k < Nz - 1)
+                  UBCELL[l + (j + k * Ny) * Nx]->add_sc(red_stress/12);// above
+              } 
+            }
+          }
         }
-      }
 
       if (breaking_flag) // equivalent to "if (to_delete.size() > 0)"
       {

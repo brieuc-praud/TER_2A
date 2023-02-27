@@ -28,10 +28,11 @@ void Cell::shatter()
     /* break the other Cells of the fiber */
     Cell *const unb = this->get_unb();
     Cell *const dnb = this->get_dnb();
-    if (unb != nullptr)
-        unb->shatter();
-    if (dnb != nullptr)
-        dnb->shatter();
+    // if (unb != nullptr)
+    //    unb->shatter();
+    // if (dnb != nullptr)
+    //    dnb->shatter();
+
 }
 
 double Cell::compute_breaking_stress() const
