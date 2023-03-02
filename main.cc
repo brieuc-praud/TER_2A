@@ -101,7 +101,9 @@ int main(int argc, char **argv)
           for (int l = 0; l < Nx; l++)
             for (int j = 0; j < Ny; j++)
             {
-              for (int k = 0; k < 3; k++)
+              double Odg = pow(10,-5)
+              int Nombmaille = floor(L/Odg);
+              for (int k = 0; k < Nombmaille; k++)
               {
                 if (k > 0)
                   UBCELL[l + (j + k * Ny) * Nx]->add_sc(red_stress/12) ;// below
