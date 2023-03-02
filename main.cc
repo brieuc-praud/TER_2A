@@ -23,7 +23,7 @@ int main(int argc, char **argv)
   /* For reducing the number of output files */
   int nf = 0;
   int mod_nf; // Number of output files : Nx*Ny*Nz/mod_nf
-  ReadParameters(Nx, Ny, Nz, L,V, s0, m, file_name_prefix, mod_nf);
+  ReadParameters(Nx, Ny, Nz, L,Odg, V, s0, m, file_name_prefix, mod_nf);
 
   int const N = Nx * Ny * Nz; // total number of cells
 
@@ -101,7 +101,6 @@ int main(int argc, char **argv)
           for (int l = 0; l < Nx; l++)
             for (int j = 0; j < Ny; j++)
             {
-              double Odg = pow(10,-5)
               int Nombmaille = floor(L/Odg);
               for (int k = 0; k < Nombmaille; k++)
               {
