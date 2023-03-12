@@ -20,6 +20,7 @@ int main(int argc, char **argv)
   double V;
   double s0;
   int m;
+  double Odg;
   /* For reducing the number of output files */
   int nf = 0;
   int mod_nf; // Number of output files : Nx*Ny*Nz/mod_nf
@@ -62,10 +63,22 @@ int main(int argc, char **argv)
           CELL[i + (j + k * Ny) * Nx]->add_NB(CELL[i + (j - 1 + k * Ny) * Nx]); // front
         if (j < Ny - 1)
           CELL[i + (j + k * Ny) * Nx]->add_NB(CELL[i + (j + 1 + k * Ny) * Nx]); // back
-        if (k > 0)
-          CELL[i + (j + k * Ny) * Nx]->set_dnb(CELL[i + (j + (k - 1) * Ny) * Nx]); // below
-        if (k < Nz - 1)
-          CELL[i + (j + k * Ny) * Nx]->set_unb(CELL[i + (j + (k + 1) * Ny) * Nx]); // above
+        if (k > 0 ){
+          int l = 0;
+          while (l < 3 && k -l > 0){
+            CELL[i + (j + k * Ny) * Nx]->add_dnb(CELL[i + (j + (k - 1 - l) * Ny) * Nx]); // below
+            //std::cout << "dessous " << k << "voisin " << k - l - 1 << std::endl ;
+            l+= 1;
+          }
+        }
+        if (k < Nz - 1 ){
+          int l = 0;
+          while (l < 3 && k+l < Nz - 1){
+            CELL[i + (j + k * Ny) * Nx]->add_unb(CELL[i + (j + (k + 1 + l ) * Ny) * Nx]); // above
+            //std::cout << "dessus " << k << "voisin" << l + k + 1<< std::endl ;
+            l+= 1;
+          }
+      }
       }
     }
   }
@@ -98,20 +111,21 @@ int main(int argc, char **argv)
           UBCELL[i]->shatter();
           to_delete.push_back(i);
           breaking_flag = true;
-          for (int l = 0; l < Nx; l++)
-            for (int j = 0; j < Ny; j++)
-            {
-              int Nombmaille = floor(L/Odg);
-              for (int k = 0; k < Nombmaille; k++)
-              {
-                if (k > 0)
-                  UBCELL[l + (j + k * Ny) * Nx]->add_sc(red_stress/12) ;// below
-                if (k < Nz - 1)
-                  UBCELL[l + (j + k * Ny) * Nx]->add_sc(red_stress/12);// above
-              } 
-            }
-          }
+        //   for (int l = 0; l < Nx; i++)
+        //   {
+        //     for (int j = 0; j < Ny; j++)
+        //     {
+        //       for (int k = 0; k < Nz; k++)
+        //       {
+        // if (k > 0 && k < 3)
+        //   CELL[i + (j + (k - 1) * Ny) * Nx]->add_sc(7.); // below
+        // if (k < Nz - 1 && k > 3)
+        //   CELL[i + (j + (k + 1) * Ny) * Nx]->add_sc(7.); // above
+        //       }
+        //     }
+        //   }
         }
+      }
 
       if (breaking_flag) // equivalent to "if (to_delete.size() > 0)"
       {
