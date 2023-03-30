@@ -14,19 +14,22 @@ int main(int argc, char **argv)
   int Nx;                       // X dimension
   int Ny;                       // Y dimension
   int Nz;                       // Z dimension
-  int L;                        // reload length, only a number of maillon for the moment
+  int R;                        // L = (R*sigma)/tau
+  int sigma; 
+  int tau;                       // reload length, only a number of maillon for the moment
   std::string file_name_prefix; // path and filename prefix for the results files
   /* Weibull's law parameters */
   double V;
   double s0;
-  int m;
+  double m;
   double Odg;
   /* For reducing the number of output files */
   int nf = 0;
   int mod_nf; // Number of output files : Nx*Ny*Nz/mod_nf
-  ReadParameters(Nx, Ny, Nz, L,Odg, V, s0, m, file_name_prefix, mod_nf);
+  ReadParameters(Nx, Ny, Nz, R, sigma, tau, Odg, V, s0, m, file_name_prefix, mod_nf);
 
   int const N = Nx * Ny * Nz; // total number of cells
+  int const L = (R*sigma)/tau; // longueur de rechargement
 
   // Initialization
   std::default_random_engine generator(time(0));
@@ -35,6 +38,7 @@ int main(int argc, char **argv)
   std::vector<Cell *> UBCELL; // UBCELL stores only unbroken cells (as a result, the number of Cells to check decline at each iteration)
   std::vector<Cell *>UPCELL;
   std::vector<Cell *>DOWNCELL;
+
 
   CELL.resize(N);
   double const coeff = s0 / pow(V, 1. / m);
@@ -67,15 +71,13 @@ int main(int argc, char **argv)
           int l = 0;
           while (l < 3 && k -l > 0){
             CELL[i + (j + k * Ny) * Nx]->add_dnb(CELL[i + (j + (k - 1 - l) * Ny) * Nx]); // below
-            //std::cout << "dessous " << k << "voisin " << k - l - 1 << std::endl ;
             l+= 1;
           }
         }
         if (k < Nz - 1 ){
           int l = 0;
-          while (l < 3 && k+l < Nz - 1){
+          while (l < L && k+l < Nz - 1){
             CELL[i + (j + k * Ny) * Nx]->add_unb(CELL[i + (j + (k + 1 + l ) * Ny) * Nx]); // above
-            //std::cout << "dessus " << k << "voisin" << l + k + 1<< std::endl ;
             l+= 1;
           }
       }
@@ -108,7 +110,7 @@ int main(int argc, char **argv)
       {
         if (UBCELL[i]->compute_breaking_stress() <= red_stress)
         {
-          UBCELL[i]->shatter();
+          UBCELL[i]->shatter(L,red_stress);
           to_delete.push_back(i);
           breaking_flag = true;
         //   for (int l = 0; l < Nx; i++)
@@ -137,6 +139,8 @@ int main(int argc, char **argv)
         }
       }
     }
+    std::cout << "contrainte" << red_stress << std::endl ;
+
   }
 
   /* Saving the final state */

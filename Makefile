@@ -16,7 +16,8 @@ SRC = main.cc Cell.cpp FileTools.cpp
 
 # The compilation line
 $(PROG) : $(SRC)
-	$(CC) $(SRC) $(CXX_FLAGS) -o $(PROG)
+	$(CC) $(SRC) $(CXX_FLAGS) -o $(PROG) 
+	mkdir ./results
 
 # Compile and run
 run : $(PROG)

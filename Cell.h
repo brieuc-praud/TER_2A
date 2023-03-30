@@ -15,7 +15,7 @@ private:
 public:
     Cell(double cr);
 
-    void shatter(); // break the Cell and manage all of its consequences
+    void shatter(int L, double red_stress); // break the Cell and manage all of its consequences
 
     double compute_breaking_stress() const;     // minimal stress to apply in order to break the Cell
     double compute_stress(double Stress) const; // local stress induced on the Cell by the Stress on the tensile specimen

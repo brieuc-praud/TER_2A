@@ -2,12 +2,15 @@
 Nx = 16
 Ny = 16
 Nz = 16
-L=2
+R = 9
+sigma = 3
+tau = 9
+Odg = 1
 
 [Weibull]
-V = 50.0
+V = 5.0
 s0 = 2.0
-m = 1
+m = 0.7
 
 [Other]
 file_name_prefix = "results/tt_"    # path and filename prefix for the results files

@@ -82,9 +82,10 @@ void SaveSolution(std::string file_name, int Nx, int Ny, int Nz, std::vector<Cel
     }
 
     solution.close();
-}
 
-void ReadParameters(int &Nx, int &Ny, int &Nz, int &L,double &Odg, double &V, double &s0, int &m, std::string &file_name_prefix, int &mod_nf)
+    }
+
+void ReadParameters(int &Nx, int &Ny, int &Nz, int &R, int &sigma, int &tau,double &Odg, double &V, double &s0, double &m, std::string &file_name_prefix, int &mod_nf)
 {
     auto config = toml::parse("parameters.toml");
 
@@ -93,11 +94,15 @@ void ReadParameters(int &Nx, int &Ny, int &Nz, int &L,double &Odg, double &V, do
     Ny = toml::find<int>(Dimensions, "Ny");
     Nz = toml::find<int>(Dimensions, "Nz");
     Odg = toml::find<int>(Dimensions, "Odg");
+
+    R = toml::find<int>(Dimensions, "R");
+    sigma = toml::find<int>(Dimensions, "sigma");
+    tau = toml::find<int>(Dimensions, "tau");
     
     const auto &Weibull = toml::find(config, "Weibull");
     V = toml::find<double>(Weibull, "V");
     s0 = toml::find<double>(Weibull, "s0");
-    m = toml::find<int>(Weibull, "m");
+    m = toml::find<double>(Weibull, "m");
 
     const auto &Other = toml::find(config, "Other");
     file_name_prefix = toml::find<std::string>(Other, "file_name_prefix");

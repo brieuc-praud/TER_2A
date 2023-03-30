@@ -1,10 +1,11 @@
 #include "Cell.h"
+#include "FileTools.h"
 #include <iostream>
 Cell::Cell(double bs) : _sc(1.), _bs(bs), _broken(false), _NB(0), _unb(0), _dnb(0)
 {
 }
 
-void Cell::shatter()
+void Cell::shatter(int L, double red_stress)
 {
     if (this->isBroken())
         return;
@@ -32,11 +33,11 @@ void Cell::shatter()
     int n2 = dnb.size(); // size of down neighbors
     double attenuation_factor = 1.0 ;
     for (int i = 0; i < n1; i++){
-        attenuation_factor = 1.0-static_cast<double>(i) / L; // modifier ici pour renseigner ce qu'est L
+        attenuation_factor = 1.0 -static_cast<double>(i)/L ; // modifier ici pour renseigner ce qu'est L
         unb[i]->add_sc(red_stress*attenuation_factor);
     }
     for (int i = 0; i < n2; i++){
-        attenuation_factor = 1.0-static_cast<double>(i) / L; // modifier ici pour renseigner ce qu'est L
+    attenuation_factor = 1.0 -static_cast<double>(i)/L ; // modifier ici pour renseigner ce qu'est L
         dnb[i]->add_sc(red_stress*attenuation_factor);
     }
 
